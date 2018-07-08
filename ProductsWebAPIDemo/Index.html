@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Product App</title>
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
+</head>
+<body onload="onLoad()">
+    <div style="padding-left: 10%">
+        <div>
+            <h2>All Products</h2>
+            <ul id="allProducts" />Loading ....</ul>
+        </div>
+        <div>
+            <h2>Find by ID</h2>
+            <input type="text" id="productID" size="5" />
+            <input type="button" value="Search" onclick="findProduct();" />
+            <ul id="findProducts" /></ul>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        function formatItem(item) {
+            return item.Name + ': $' + item.Price;
+        }
+
+        function loadProducts() {
+            axios.get('/api/products')
+                .then(function (response) {
+                    // On success, 'data' contains a list of products.
+                    $('#allProducts').empty();
+                    $.each(response.data, function (key, item) {
+                        // Add a list item for the product.
+                        $('<li>', { text: formatItem(item) }).appendTo($('#allProducts'));
+                    });
+                })
+                .catch(function (error) {
+                    console.error(error.message);
+                });
+        }
+
+        function findProduct() {
+            var id = $('#productID').val();
+            axios.get('/api/products/' + id)
+                .then(function (response) {
+                    $('#findProducts').empty();
+                    $('<li>', { text: formatItem(response.data) }).appendTo($('#findProducts'));
+                })
+                .catch(function (error) {
+                    console.error(error.message);
+                });
+        }
+
+        function onLoad() {
+            loadProducts();
+        }
+    </script>
+</body>
+</html>

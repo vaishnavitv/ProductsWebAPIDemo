@@ -21,6 +21,7 @@ namespace ProductsWebAPIDemo.Controllers
         {
             return products;
         }
+
         public IHttpActionResult GetProduct(int id)
         {
            Product product = products.FirstOrDefault<Product>(p => p.Id.Equals(id));
